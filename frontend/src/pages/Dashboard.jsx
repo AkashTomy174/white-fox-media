@@ -10,11 +10,20 @@ const statItems = [
   { key: "inactive_students", label: "Inactive" },
 ];
 
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  if (hour < 21) return "Good evening";
+  return "Good night";
+};
+
 const Dashboard = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const displayName = user?.username ? `${user.username.charAt(0).toUpperCase()}${user.username.slice(1)}` : "Admin";
+  const greeting = getGreeting();
 
   useEffect(() => {
     const loadStats = async () => {
@@ -32,7 +41,7 @@ const Dashboard = () => {
     <div className="space-y-6">
       <div>
         <p className="section-label">Dashboard</p>
-        <h1 className="mt-2 text-xl font-bold tracking-[-0.02em] text-ink-text sm:text-2xl">Good morning, {displayName}</h1>
+        <h1 className="mt-2 text-xl font-bold tracking-[-0.02em] text-ink-text sm:text-2xl">{greeting}, {displayName}</h1>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
