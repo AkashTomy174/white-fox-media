@@ -12,10 +12,14 @@ NAME_PATTERN = re.compile(r"^[a-zA-Z\s'.\-]+$")
 PHONE_PATTERN = re.compile(r"^\d{10}$")
 
 
-def validate_person_name(value, field_label):
+def validate_person_name(value, field_label, min_length=2):
     name = value.strip()
-    message = f"{field_label} must be at least 2 characters and contain only letters."
-    if len(name) < 2 or not NAME_PATTERN.fullmatch(name):
+    message = (
+        f"{field_label} must be at least {min_length} characters and contain only letters."
+        if min_length > 1
+        else f"{field_label} must contain only letters."
+    )
+    if len(name) < min_length or not NAME_PATTERN.fullmatch(name):
         raise serializers.ValidationError(message)
     return name
 
@@ -51,8 +55,8 @@ class StudentSerializer(serializers.ModelSerializer):
                 "required": True,
                 "allow_blank": False,
                 "error_messages": {
-                    "required": "Last name must be at least 2 characters and contain only letters.",
-                    "blank": "Last name must be at least 2 characters and contain only letters.",
+                    "required": "Last name must contain only letters.",
+                    "blank": "Last name must contain only letters.",
                 },
             },
             "email": {
@@ -109,7 +113,7 @@ class StudentSerializer(serializers.ModelSerializer):
         return validate_person_name(value, "First name")
 
     def validate_last_name(self, value):
-        return validate_person_name(value, "Last name")
+        return validate_person_name(value, "Last name", min_length=1)
 
     def validate_phone(self, value):
         phone = value.strip()

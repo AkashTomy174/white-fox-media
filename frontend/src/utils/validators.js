@@ -53,8 +53,8 @@ export const validateField = (name, value) => {
   }
 
   if (name === "last_name") {
-    if (trimmed.length < 2 || !namePattern.test(trimmed)) {
-      return "Last name must be at least 2 characters and contain only letters.";
+    if (!trimmed || !namePattern.test(trimmed)) {
+      return "Last name must contain only letters.";
     }
   }
 
