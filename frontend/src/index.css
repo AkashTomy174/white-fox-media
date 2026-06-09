@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #0d0d0d;
+  color: #f5f5f5;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.6;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f5f5f5;
+  box-shadow: 0 0 0 1000px #1e1e1e inset;
+  caret-color: #f5f5f5;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+@layer components {
+  .input {
+    @apply h-[44px] w-full rounded border border-[#3A3A3A] bg-[#1E1E1E] px-3 py-2 text-sm text-ink-text outline-none transition placeholder:text-[#6A6A6A] focus:border-ink-accent focus:bg-[#222222] focus:ring-0 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .label {
+    @apply mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-secondary;
+  }
+
+  .error-text {
+    @apply mt-1.5 text-sm text-ink-danger;
+  }
+
+  .btn-primary {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-none border border-ink-accent bg-ink-accent px-5 text-sm font-bold text-ink-primary transition hover:bg-ink-accentHover disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-secondary {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-none border border-[#4A4A4A] bg-transparent px-5 text-sm font-bold text-ink-text transition hover:border-ink-accent hover:text-ink-accent disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-danger {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-none border border-ink-danger bg-transparent px-5 text-sm font-semibold text-ink-danger transition hover:bg-ink-elevated disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .section-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-accent;
+  }
+
+  .page-title {
+    @apply text-[28px] font-extrabold leading-tight tracking-[-0.02em] text-ink-text md:text-[32px];
+  }
+
+  .dropdown-panel {
+    scrollbar-color: #555555 #1e1e1e;
+    scrollbar-width: thin;
+  }
+
+  .dropdown-panel::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .dropdown-panel::-webkit-scrollbar-track {
+    background: #1e1e1e;
+  }
+
+  .dropdown-panel::-webkit-scrollbar-thumb {
+    background: #555555;
+    border-radius: 0;
+  }
+}
