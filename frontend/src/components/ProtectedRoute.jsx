@@ -14,9 +14,9 @@ const ProtectedRoute = () => {
     <div className="min-h-screen bg-ink-primary text-ink-text">
       <Sidebar />
       <div className="min-h-screen pl-16 md:pl-[220px]">
-        <main className="min-w-0 px-5 py-6 md:px-8 md:py-8">
-          <div className="mb-8 flex items-center justify-between">
-            <p className="section-label">SchoolOS / Student Management</p>
+        <main className="min-w-0 px-4 py-5 sm:px-5 md:px-8 md:py-8">
+          <div className="mb-6 flex items-center justify-between gap-3 md:mb-8">
+            <p className="section-label truncate">SchoolOS / Student Management</p>
             <div className="grid h-10 w-10 place-items-center rounded bg-ink-elevated text-sm font-bold uppercase text-ink-accent">
               {(user?.username || "A").charAt(0)}
             </div>

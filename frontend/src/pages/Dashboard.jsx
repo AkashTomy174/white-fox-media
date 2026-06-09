@@ -32,14 +32,14 @@ const Dashboard = () => {
     <div className="space-y-6">
       <div>
         <p className="section-label">Dashboard</p>
-        <h1 className="mt-2 text-2xl font-bold tracking-[-0.02em] text-ink-text">Good morning, {displayName}</h1>
+        <h1 className="mt-2 text-xl font-bold tracking-[-0.02em] text-ink-text sm:text-2xl">Good morning, {displayName}</h1>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         {statItems.map(({ key, label }) => (
-          <div className="rounded border border-ink-border bg-ink-surface p-5 first:border-l-4 first:border-l-ink-accent" key={key}>
+          <div className="rounded border border-ink-border bg-ink-surface p-4 first:border-l-4 first:border-l-ink-accent sm:p-5" key={key}>
             <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-muted">{label}</p>
-            <p className="mt-3 text-4xl font-extrabold tracking-[-0.02em] text-ink-text">{loading ? "Loading..." : stats?.[key] ?? 0}</p>
+            <p className="mt-3 text-3xl font-extrabold tracking-[-0.02em] text-ink-text sm:text-4xl">{loading ? "Loading..." : stats?.[key] ?? 0}</p>
           </div>
         ))}
       </div>
@@ -48,7 +48,27 @@ const Dashboard = () => {
         <div>
           <p className="section-label">Recent Enrollments</p>
         </div>
-        <div className="mt-3 overflow-x-auto border border-ink-border">
+        <div className="mt-3 border border-ink-border">
+          <div className="divide-y divide-ink-elevated md:hidden">
+            {(stats?.recent_enrollments || []).map((student) => (
+              <article className="p-4" key={student.id}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-ink-text">
+                      {student.first_name} {student.last_name}
+                    </p>
+                    <p className="mt-1 break-all text-sm text-ink-secondary">{student.email}</p>
+                    <p className="mt-1 text-sm text-ink-secondary">{student.grade}</p>
+                  </div>
+                  <StatusBadge status={student.status} />
+                </div>
+              </article>
+            ))}
+            {!loading && !stats?.recent_enrollments?.length && (
+              <div className="px-5 py-8 text-center text-sm text-ink-muted">No enrollments yet.</div>
+            )}
+          </div>
+          <div className="hidden overflow-x-auto md:block">
           <table className="min-w-full">
             <thead className="bg-ink-surface">
               <tr>
@@ -81,6 +101,7 @@ const Dashboard = () => {
               )}
             </tbody>
           </table>
+          </div>
         </div>
       </section>
     </div>

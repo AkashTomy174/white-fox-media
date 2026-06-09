@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 
 const SearchBar = ({ value, onChange }) => (
-  <label className="relative block w-full sm:max-w-xs">
+  <label className="relative block w-full">
     <span className="sr-only">Search students</span>
     <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" size={18} />
     <input

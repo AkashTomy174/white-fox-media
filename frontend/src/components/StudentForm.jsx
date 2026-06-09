@@ -222,7 +222,7 @@ const StudentForm = ({ initialValues = emptyStudent, submitLabel, onSubmit, load
   );
 
   return (
-    <form className="border border-ink-border bg-ink-surface p-5" onSubmit={handleSubmit}>
+    <form className="border border-ink-border bg-ink-surface p-4 sm:p-5" onSubmit={handleSubmit}>
       <div className="grid gap-4 md:grid-cols-2">
         {field("first_name", "First Name", "text", "Akash")}
         {field("last_name", "Last Name", "text", "O'Connor")}
@@ -232,7 +232,7 @@ const StudentForm = ({ initialValues = emptyStudent, submitLabel, onSubmit, load
           <label className="label" htmlFor="dob-day">
             Date of Birth
           </label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-[0.75fr_1.25fr_1fr] gap-2 max-[420px]:grid-cols-1">
             <div id="dob-day">{dobInput("day", "DD", 2)}</div>
             <div>{dobMonthSelect(months, "Month")}</div>
             <div>{dobInput("year", "YYYY", 4)}</div>
@@ -272,12 +272,12 @@ const StudentForm = ({ initialValues = emptyStudent, submitLabel, onSubmit, load
           {errors.address && <p className="error-text">{errors.address}</p>}
         </div>
       </div>
-      <div className="mt-6 flex flex-wrap justify-end gap-3">
-        <button className="btn-secondary" disabled={submitDisabled} onClick={() => navigate(-1)} type="button">
+      <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
+        <button className="btn-secondary w-full sm:w-auto" disabled={submitDisabled} onClick={() => navigate(-1)} type="button">
           <X size={18} aria-hidden="true" />
           Cancel
         </button>
-        <button className="btn-primary" disabled={submitDisabled} type="submit">
+        <button className="btn-primary w-full sm:w-auto" disabled={submitDisabled} type="submit">
           <Save size={18} aria-hidden="true" />
           {submitDisabled ? "Saving..." : submitLabel}
         </button>

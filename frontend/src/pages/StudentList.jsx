@@ -60,15 +60,15 @@ const StudentList = () => {
           <p className="section-label">Students / All Records</p>
           <h1 className="page-title mt-2">Students</h1>
         </div>
-        <Link className="btn-primary" to="/students/add">
+        <Link className="btn-primary w-full sm:w-auto" to="/students/add">
           <UserPlus size={18} aria-hidden="true" />
           Add Student
         </Link>
       </div>
 
-      <div className="flex flex-col gap-3 border border-ink-border bg-ink-surface p-4 sm:flex-row sm:items-center">
+      <div className="grid gap-3 border border-ink-border bg-ink-surface p-4 lg:grid-cols-[minmax(220px,1fr)_176px_176px]">
         <SearchBar onChange={setSearch} value={search} />
-        <select className="input sm:ml-auto sm:max-w-44" onChange={(event) => { setGrade(event.target.value); setPage(1); }} value={grade}>
+        <select className="input" onChange={(event) => { setGrade(event.target.value); setPage(1); }} value={grade}>
           <option value="">All grades</option>
           {gradeOptions.map((option) => (
             <option key={option} value={option}>
@@ -76,7 +76,7 @@ const StudentList = () => {
             </option>
           ))}
         </select>
-        <select className="input sm:max-w-44" onChange={(event) => { setStatus(event.target.value); setPage(1); }} value={status}>
+        <select className="input" onChange={(event) => { setStatus(event.target.value); setPage(1); }} value={status}>
           <option value="">All statuses</option>
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>

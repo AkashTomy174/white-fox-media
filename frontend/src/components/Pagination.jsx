@@ -5,11 +5,11 @@ const Pagination = ({ count, page, pageSize = 10, onPageChange }) => {
   if (count <= pageSize) return null;
 
   return (
-    <div className="flex flex-wrap items-center justify-end gap-4 border-t border-ink-border px-4 py-4">
-      <p className="mr-auto text-sm text-ink-muted">
+    <div className="flex flex-col gap-3 border-t border-ink-border px-4 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+      <p className="text-sm text-ink-muted sm:mr-auto">
         Page {page} of {totalPages}
       </p>
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
         <button className="text-sm font-semibold text-ink-secondary transition hover:text-ink-accent disabled:cursor-not-allowed disabled:text-ink-muted" disabled={page === 1} onClick={() => onPageChange(page - 1)} type="button">
           {"<-"} Previous
         </button>
