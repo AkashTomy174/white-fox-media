@@ -13,7 +13,7 @@ const ProtectedRoute = () => {
   return (
     <div className="min-h-screen bg-ink-primary text-ink-text">
       <Sidebar />
-      <div className="min-h-screen pl-16 md:pl-[220px]">
+      <div className="min-h-screen pb-20 md:pb-0 md:pl-[220px]">
         <main className="min-w-0 px-4 py-5 sm:px-5 md:px-8 md:py-8">
           <div className="mb-6 flex items-center justify-between gap-3 md:mb-8">
             <p className="section-label truncate">SchoolOS / Student Management</p>
