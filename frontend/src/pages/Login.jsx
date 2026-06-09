@@ -85,11 +85,12 @@ const Login = () => {
               />
               <button
                 className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded text-ink-secondary hover:bg-ink-elevated hover:text-ink-text"
+                aria-label={showPassword ? "Hide password" : "Show password"}
                 onClick={() => setShowPassword((current) => !current)}
                 title={showPassword ? "Hide password" : "Show password"}
                 type="button"
               >
-                {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+                {showPassword ? <Eye size={18} aria-hidden="true" /> : <EyeOff size={18} aria-hidden="true" />}
               </button>
             </div>
             {errors.password && <p className="error-text">{errors.password}</p>}
