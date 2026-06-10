@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoute = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -15,11 +15,8 @@ const ProtectedRoute = () => {
       <Sidebar />
       <div className="min-h-screen pb-20 md:pb-0 md:pl-[220px]">
         <main className="min-w-0 px-4 py-5 sm:px-5 md:px-8 md:py-8">
-          <div className="mb-6 flex items-center justify-between gap-3 md:mb-8">
+          <div className="mb-6 md:mb-8">
             <p className="section-label truncate">SchoolOS / Student Management</p>
-            <div className="grid h-10 w-10 place-items-center rounded bg-ink-elevated text-sm font-bold uppercase text-ink-accent">
-              {(user?.username || "A").charAt(0)}
-            </div>
           </div>
           <Outlet />
         </main>

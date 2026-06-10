@@ -1,7 +1,8 @@
 from datetime import date
+import os
 
 from django.contrib.auth import get_user_model
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 from students.models import Student
 
@@ -11,13 +12,25 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         User = get_user_model()
+        admin_username = os.environ.get("ADMIN_USERNAME", "admin")
+        admin_email = os.environ.get("ADMIN_EMAIL", "admin@example.com")
+        admin_password = os.environ.get("ADMIN_PASSWORD")
+        reset_password = os.environ.get("ADMIN_RESET_PASSWORD", "False").lower() == "true"
+
         admin, created = User.objects.get_or_create(
-            username="admin",
-            defaults={"email": "admin@example.com", "is_staff": True, "is_superuser": True},
+            username=admin_username,
+            defaults={"email": admin_email, "is_staff": True, "is_superuser": True},
         )
         admin.is_staff = True
         admin.is_superuser = True
-        admin.set_password("admin123")
+        admin.email = admin_email
+
+        if created and not admin_password:
+            raise CommandError("ADMIN_PASSWORD is required when creating the admin user.")
+
+        if admin_password and (created or reset_password):
+            admin.set_password(admin_password)
+
         admin.save()
 
         students = [
@@ -47,6 +60,6 @@ class Command(BaseCommand):
                 },
             )
 
-        user_status = "created" if created else "updated"
-        self.stdout.write(self.style.SUCCESS(f"Admin user {user_status}: admin/admin123"))
+        user_status = "created" if created else "already exists"
+        self.stdout.write(self.style.SUCCESS(f"Admin user {user_status}: {admin_username}"))
         self.stdout.write(self.style.SUCCESS("Seeded 10 sample students."))

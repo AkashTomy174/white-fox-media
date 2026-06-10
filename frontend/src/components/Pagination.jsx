@@ -2,7 +2,7 @@ const Pagination = ({ count, page, pageSize = 10, onPageChange }) => {
   const totalPages = Math.max(1, Math.ceil(count / pageSize));
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
 
-  if (count <= pageSize) return null;
+  if (!count) return null;
 
   return (
     <div className="flex flex-col gap-3 border-t border-ink-border px-4 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">

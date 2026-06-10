@@ -78,9 +78,11 @@ python manage.py runserver
 
 The backend will run at `http://127.0.0.1:8000`.
 
-Default credentials:
-- Username: `admin`
-- Password: `admin123`
+Admin credentials are configured through environment variables before running `python manage.py seed`:
+- `ADMIN_USERNAME`
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
+- `ADMIN_RESET_PASSWORD`
 
 ## Frontend Setup
 
@@ -103,6 +105,10 @@ SECRET_KEY=change-me-in-production
 ALLOWED_HOSTS=localhost,127.0.0.1
 CORS_ALLOW_ALL_ORIGINS=True
 DATABASE_URL=sqlite:///db.sqlite3
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=replace-this-in-render-with-a-private-password
+ADMIN_RESET_PASSWORD=False
 ```
 
 Frontend `.env`:
@@ -147,8 +153,8 @@ Request:
 
 ```json
 {
-  "username": "admin",
-  "password": "admin123"
+  "username": "your-admin-username",
+  "password": "your-admin-password"
 }
 ```
 
@@ -303,7 +309,7 @@ Backend on Render:
 - In Render, create a Blueprint from `render.yaml` or create a Web Service with root directory `backend`.
 - Build command: `bash build.sh`
 - Start command: `python manage.py migrate && python manage.py seed && gunicorn school_backend.wsgi:application`
-- Add production environment variables for `SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS`, `DATABASE_URL`, `CORS_ALLOWED_ORIGINS`, `CSRF_TRUSTED_ORIGINS`, `SECURE_SSL_REDIRECT=True`, and `SECURE_HSTS_SECONDS=31536000`.
+- Add production environment variables for `SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS`, `DATABASE_URL`, `CORS_ALLOWED_ORIGINS`, `CSRF_TRUSTED_ORIGINS`, `SECURE_SSL_REDIRECT=True`, `SECURE_HSTS_SECONDS=31536000`, and private admin credentials via `ADMIN_USERNAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD`.
 
 Frontend on Vercel:
 - Set the root directory to `frontend`.
