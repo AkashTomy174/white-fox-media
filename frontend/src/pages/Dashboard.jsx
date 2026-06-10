@@ -44,11 +44,11 @@ const Dashboard = () => {
         <h1 className="mt-2 text-xl font-bold tracking-[-0.02em] text-ink-text sm:text-2xl">{greeting}, {displayName}</h1>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         {statItems.map(({ key, label }) => (
-          <div className="rounded border border-ink-border bg-ink-surface p-4 first:border-l-4 first:border-l-ink-accent sm:p-5" key={key}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-muted">{label}</p>
-            <p className="mt-3 text-3xl font-extrabold tracking-[-0.02em] text-ink-text sm:text-4xl">{loading ? "Loading..." : stats?.[key] ?? 0}</p>
+          <div className="rounded border border-ink-border bg-ink-surface p-2.5 first:border-l-4 first:border-l-ink-accent sm:p-5" key={key}>
+            <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-ink-muted sm:text-[11px]">{label}</p>
+            <p className="mt-2 text-xl font-extrabold tracking-[-0.02em] text-ink-text sm:mt-3 sm:text-4xl">{loading ? "Loading..." : stats?.[key] ?? 0}</p>
           </div>
         ))}
       </div>
