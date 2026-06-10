@@ -12,7 +12,7 @@ import { useStudents } from "../hooks/useStudents";
 const gradeOptions = Array.from({ length: 12 }, (_, index) => `Grade ${index + 1}`);
 
 const StudentList = () => {
-  const { students, pagination, loading, fetchStudents, deleteStudent } = useStudents();
+  const { students, pagination, loading, fetchStudents, deleteStudent, updateStudentStatus } = useStudents();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [status, setStatus] = useState("");
@@ -20,6 +20,7 @@ const StudentList = () => {
   const [page, setPage] = useState(1);
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [statusUpdatingId, setStatusUpdatingId] = useState(null);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -50,6 +51,20 @@ const StudentList = () => {
       toast.error("Unable to delete student.");
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const toggleStudentStatus = async (student) => {
+    const nextStatus = student.status === "active" ? "inactive" : "active";
+    setStatusUpdatingId(student.id);
+    try {
+      await updateStudentStatus(student.id, nextStatus);
+      toast.success(`Student ${nextStatus === "active" ? "activated" : "deactivated"} successfully.`);
+      fetchStudents({ page, search: debouncedSearch, status, grade });
+    } catch {
+      toast.error("Unable to update student status.");
+    } finally {
+      setStatusUpdatingId(null);
     }
   };
 
@@ -84,7 +99,13 @@ const StudentList = () => {
       </div>
 
       <div className="border border-ink-border">
-        <StudentTable loading={loading} onDelete={setStudentToDelete} students={students} />
+        <StudentTable
+          loading={loading}
+          onDelete={setStudentToDelete}
+          onToggleStatus={toggleStudentStatus}
+          statusUpdatingId={statusUpdatingId}
+          students={students}
+        />
         <Pagination count={pagination.count} onPageChange={setPage} page={page} />
       </div>
 

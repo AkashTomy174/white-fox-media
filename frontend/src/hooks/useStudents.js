@@ -45,6 +45,11 @@ export const useStudents = () => {
     return response.data;
   }, []);
 
+  const updateStudentStatus = useCallback(async (id, status) => {
+    const response = await api.patch(`/students/${id}`, { status });
+    return response.data;
+  }, []);
+
   const deleteStudent = useCallback(async (id) => {
     const response = await api.delete(`/students/${id}`);
     return response.data;
@@ -59,6 +64,7 @@ export const useStudents = () => {
     getStudent,
     createStudent,
     updateStudent,
+    updateStudentStatus,
     deleteStudent,
   };
 };

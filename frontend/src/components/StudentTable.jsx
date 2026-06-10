@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 import StatusBadge from "./StatusBadge";
 
-const StudentTable = ({ students, loading, onDelete }) => {
+const StudentTable = ({ students, loading, onDelete, onToggleStatus, statusUpdatingId }) => {
   if (loading) {
     return (
       <div className="bg-ink-primary p-6 text-sm text-ink-secondary">
@@ -44,10 +44,19 @@ const StudentTable = ({ students, loading, onDelete }) => {
                 <dd className="mt-1 text-ink-text">{student.grade}</dd>
               </div>
             </dl>
-            <div className="mt-4 flex gap-4 border-t border-ink-elevated pt-3">
+            <div className="mt-4 flex flex-wrap gap-4 border-t border-ink-elevated pt-3">
               <Link className="text-sm font-semibold text-ink-secondary transition hover:text-ink-accent" to={`/students/${student.id}/edit`} title="Edit student">
                 Edit
               </Link>
+              <button
+                className="text-sm font-semibold text-ink-accent transition hover:text-ink-text disabled:cursor-not-allowed disabled:text-ink-muted"
+                disabled={statusUpdatingId === student.id}
+                onClick={() => onToggleStatus(student)}
+                title={student.status === "active" ? "Deactivate student" : "Activate student"}
+                type="button"
+              >
+                {statusUpdatingId === student.id ? "Updating..." : student.status === "active" ? "Deactivate" : "Activate"}
+              </button>
               <button className="text-sm font-semibold text-ink-danger transition hover:text-ink-text" onClick={() => onDelete(student)} title="Delete student" type="button">
                 Delete
               </button>
@@ -79,10 +88,19 @@ const StudentTable = ({ students, loading, onDelete }) => {
                   <StatusBadge status={student.status} />
                 </td>
                 <td className="whitespace-nowrap px-4 py-4">
-                  <div className="flex gap-2">
+                  <div className="flex gap-3">
                     <Link className="text-sm font-semibold text-ink-secondary transition hover:text-ink-accent" to={`/students/${student.id}/edit`} title="Edit student">
                       Edit
                     </Link>
+                    <button
+                      className="text-sm font-semibold text-ink-accent transition hover:text-ink-text disabled:cursor-not-allowed disabled:text-ink-muted"
+                      disabled={statusUpdatingId === student.id}
+                      onClick={() => onToggleStatus(student)}
+                      title={student.status === "active" ? "Deactivate student" : "Activate student"}
+                      type="button"
+                    >
+                      {statusUpdatingId === student.id ? "Updating..." : student.status === "active" ? "Deactivate" : "Activate"}
+                    </button>
                     <button className="text-sm font-semibold text-ink-danger transition hover:text-ink-text" onClick={() => onDelete(student)} title="Delete student" type="button">
                       Delete
                     </button>
