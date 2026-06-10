@@ -1,69 +1,54 @@
-# School Management System - Student Management Module
+# SchoolOS - Student Management System
 
-A complete student management module built with Django REST Framework and React. It includes JWT authentication, student CRUD, search, status filtering, pagination, dashboard statistics, sample data seeding, and a responsive Tailwind CSS interface.
+SchoolOS is a full-stack student management module built with Django REST Framework and React. It supports JWT authentication, student CRUD, dashboard statistics, search, grade/status filtering, pagination, responsive layouts, and production deployment on Render and Vercel.
 
 ## Tech Stack
 
 Backend:
+- Python
 - Django
 - Django REST Framework
-- djangorestframework-simplejwt
+- Simple JWT
 - django-cors-headers
 - django-environ
-- SQLite
+- Gunicorn
+- SQLite for local development
+- PostgreSQL for production
 
 Frontend:
-- React 18
+- React
 - Vite
-- React Router v6
+- React Router
 - Axios
 - Tailwind CSS
-- react-hot-toast
 - lucide-react
 
-## Folder Structure
+## Project Structure
 
 ```text
 backend/
   manage.py
   requirements.txt
-  .env.example
+  build.sh
+  Procfile
   school_backend/
-    settings.py
-    urls.py
-    wsgi.py
   students/
-    models.py
-    serializers.py
-    views.py
-    urls.py
-    permissions.py
-    pagination.py
-    exceptions.py
-    management/commands/seed.py
 
 frontend/
   package.json
-  .env.example
-  index.html
+  vite.config.js
+  vercel.json
   src/
-    main.jsx
-    App.jsx
-    api/axios.js
-    context/AuthContext.jsx
-    hooks/useStudents.js
-    pages/
-    components/
-    utils/validators.js
 ```
 
-## Prerequisites
+## Requirements
 
 - Python 3.10+
 - Node.js 18+
 - npm
+- Git
 
-## Backend Setup
+## Local Backend Setup
 
 ```bash
 cd backend
@@ -76,15 +61,24 @@ python manage.py seed
 python manage.py runserver
 ```
 
-The backend will run at `http://127.0.0.1:8000`.
+Backend local URL:
 
-Admin credentials are configured through environment variables before running `python manage.py seed`:
-- `ADMIN_USERNAME`
-- `ADMIN_EMAIL`
-- `ADMIN_PASSWORD`
-- `ADMIN_RESET_PASSWORD`
+```text
+http://127.0.0.1:8000
+```
 
-## Frontend Setup
+The seed command creates an admin user and sample students. Set these values in `backend/.env` before running it:
+
+```env
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=your-private-password
+ADMIN_RESET_PASSWORD=False
+```
+
+Use `ADMIN_RESET_PASSWORD=True` only when you intentionally want to reset an existing seeded admin password.
+
+## Local Frontend Setup
 
 ```bash
 cd frontend
@@ -93,229 +87,243 @@ copy .env.example .env
 npm run dev
 ```
 
-The frontend will run at `http://127.0.0.1:5173`.
+Frontend local URL:
+
+```text
+http://127.0.0.1:5173
+```
 
 ## Environment Variables
 
-Backend `.env`:
+Backend local `.env`:
 
 ```env
 DEBUG=True
-SECRET_KEY=change-me-in-production
+SECRET_KEY=replace-this-with-a-random-secret-key
 ALLOWED_HOSTS=localhost,127.0.0.1
 CORS_ALLOW_ALL_ORIGINS=True
+CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+CSRF_TRUSTED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 DATABASE_URL=sqlite:///db.sqlite3
+SECURE_SSL_REDIRECT=False
+SECURE_HSTS_SECONDS=0
 ADMIN_USERNAME=admin
 ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=replace-this-in-render-with-a-private-password
+ADMIN_PASSWORD=your-private-password
 ADMIN_RESET_PASSWORD=False
 ```
 
-Frontend `.env`:
+Frontend local `.env`:
 
 ```env
 VITE_API_BASE_URL=http://127.0.0.1:8000/api
 ```
 
-Frontend production `.env`:
+## Production Deployment
 
-```env
-VITE_API_BASE_URL=https://your-render-backend-url.onrender.com/api
-```
+Production should use PostgreSQL. Do not use SQLite for live data on Render because the filesystem can be recreated during deploys or restarts.
 
-## API Documentation
+### Backend on Render
 
-All API responses use this success format:
-
-```json
-{
-  "success": true,
-  "message": "Operation successful.",
-  "data": {}
-}
-```
-
-All API errors use this format:
-
-```json
-{
-  "success": false,
-  "message": "Validation failed.",
-  "errors": {}
-}
-```
-
-### Login
-
-`POST /api/login`
-
-Request:
-
-```json
-{
-  "username": "your-admin-username",
-  "password": "your-admin-password"
-}
-```
-
-Response:
-
-```json
-{
-  "success": true,
-  "message": "Login successful.",
-  "data": {
-    "refresh": "refresh-token",
-    "access": "access-token",
-    "user": {
-      "id": 1,
-      "username": "admin",
-      "email": "admin@example.com"
-    }
-  }
-}
-```
-
-### Refresh Token
-
-`POST /api/token/refresh`
-
-Request:
-
-```json
-{
-  "refresh": "refresh-token"
-}
-```
-
-Response:
-
-```json
-{
-  "access": "new-access-token"
-}
-```
-
-### List Students
-
-`GET /api/students?search=aarav&status=active&page=1`
-
-Headers:
+1. Create a Render PostgreSQL database.
+2. Copy the database's **Internal Database URL**.
+3. Create or open the Render web service for the backend.
+4. Set the root directory to:
 
 ```text
-Authorization: Bearer access-token
+backend
 ```
 
-Response:
+5. Set the build command:
 
-```json
-{
-  "success": true,
-  "message": "Students retrieved successfully.",
-  "data": {
-    "count": 1,
-    "next": null,
-    "previous": null,
-    "results": [
-      {
-        "id": 1,
-        "first_name": "Aarav",
-        "last_name": "Sharma",
-        "email": "aarav.sharma@example.com",
-        "phone": "9876543210",
-        "date_of_birth": "2009-04-12",
-        "grade": "Grade 10",
-        "address": "12 Park Street, New Delhi",
-        "enrollment_date": "2026-06-09",
-        "status": "active",
-        "created_at": "2026-06-09T10:00:00Z",
-        "updated_at": "2026-06-09T10:00:00Z"
-      }
-    ]
-  }
-}
+```bash
+bash build.sh
 ```
 
-### Create Student
+6. Set the start command:
 
-`POST /api/students`
+```bash
+python manage.py migrate && gunicorn school_backend.wsgi:application
+```
+
+7. Add these environment variables:
+
+```env
+DEBUG=False
+SECRET_KEY=<generate-a-secure-secret-key>
+ALLOWED_HOSTS=<your-render-service>.onrender.com
+DATABASE_URL=<render-postgres-internal-database-url>
+CORS_ALLOW_ALL_ORIGINS=False
+CORS_ALLOWED_ORIGINS=https://<your-vercel-frontend>.vercel.app
+CSRF_TRUSTED_ORIGINS=https://<your-vercel-frontend>.vercel.app
+SECURE_SSL_REDIRECT=True
+SECURE_HSTS_SECONDS=31536000
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=<private-admin-password>
+ADMIN_RESET_PASSWORD=False
+```
+
+8. Deploy the backend.
+
+Run seed manually only once if you want to create the admin user and sample students in production:
+
+```bash
+python manage.py seed
+```
+
+Do not keep `python manage.py seed` in the Render start command. Running migrations on startup is okay, but seeding should be a manual setup action.
+
+### Frontend on Vercel
+
+1. Import the GitHub repository into Vercel.
+2. Set the root directory to:
+
+```text
+frontend
+```
+
+3. Set the build command:
+
+```bash
+npm run build
+```
+
+4. Set the output directory:
+
+```text
+dist
+```
+
+5. Add this environment variable:
+
+```env
+VITE_API_BASE_URL=https://<your-render-service>.onrender.com/api
+```
+
+6. Deploy the frontend.
+7. Copy the Vercel URL and add it to the backend Render variables:
+
+```env
+CORS_ALLOWED_ORIGINS=https://<your-vercel-frontend>.vercel.app
+CSRF_TRUSTED_ORIGINS=https://<your-vercel-frontend>.vercel.app
+```
+
+8. Redeploy the backend after updating those values.
+
+## API Overview
+
+All protected endpoints require:
+
+```text
+Authorization: Bearer <access-token>
+```
+
+### Authentication
+
+Login:
+
+```http
+POST /api/login
+```
 
 Request:
 
 ```json
 {
-  "first_name": "Neha",
-  "last_name": "Kumar",
-  "email": "neha.kumar@example.com",
-  "phone": "9876500000",
+  "username": "admin",
+  "password": "your-password"
+}
+```
+
+Refresh token:
+
+```http
+POST /api/token/refresh
+```
+
+### Students
+
+List students:
+
+```http
+GET /api/students?search=akash&grade=Grade%2010&status=active&page=1
+```
+
+Create student:
+
+```http
+POST /api/students
+```
+
+Request:
+
+```json
+{
+  "first_name": "Akash",
+  "last_name": "Tomy",
+  "email": "akash@example.com",
+  "phone": "9876543210",
   "date_of_birth": "2010-02-14",
-  "grade": "Grade 9",
-  "address": "25 School Road, Hyderabad",
+  "grade": "Grade 10",
+  "address": "123 Main Street, Kochi",
   "status": "active"
 }
 ```
 
-Response status: `201 Created`
+Retrieve, update, and delete:
 
-### Retrieve Student
-
-`GET /api/students/1`
-
-Returns one student record in the standard success format.
-
-### Update Student
-
-`PUT /api/students/1`
-
-Uses the same request body as Create Student and returns the updated record.
-
-### Delete Student
-
-`DELETE /api/students/1`
-
-Response:
-
-```json
-{
-  "success": true,
-  "message": "Student deleted successfully.",
-  "data": {}
-}
+```http
+GET /api/students/<id>
+PUT /api/students/<id>
+DELETE /api/students/<id>
 ```
 
-### Dashboard Stats
+### Dashboard
 
-`GET /api/dashboard/stats`
-
-Response:
-
-```json
-{
-  "success": true,
-  "message": "Dashboard statistics retrieved successfully.",
-  "data": {
-    "total_students": 10,
-    "active_students": 7,
-    "inactive_students": 3,
-    "recent_enrollments": []
-  }
-}
+```http
+GET /api/dashboard/stats
 ```
 
-## Deployment Notes
+Returns total students, active students, inactive students, and recent enrollments.
 
-Backend on Render:
-- Push the repository to GitHub.
-- In Render, create a Blueprint from `render.yaml` or create a Web Service with root directory `backend`.
-- Build command: `bash build.sh`
-- Start command: `python manage.py migrate && python manage.py seed && gunicorn school_backend.wsgi:application`
-- Add production environment variables for `SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS`, `DATABASE_URL`, `CORS_ALLOWED_ORIGINS`, `CSRF_TRUSTED_ORIGINS`, `SECURE_SSL_REDIRECT=True`, `SECURE_HSTS_SECONDS=31536000`, and private admin credentials via `ADMIN_USERNAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD`.
+## Validation Rules
 
-Frontend on Vercel:
-- Set the root directory to `frontend`.
-- Build command: `npm run build`
-- Output directory: `dist`
-- Set `VITE_API_BASE_URL` to the deployed backend API URL.
-- After Vercel gives you the frontend URL, add it to the backend `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS` values on Render.
+Student data is validated on both the frontend and backend:
 
-Live demo URL: `https://your-live-demo-url.example.com`
+- First name: minimum 2 characters, letters/spaces/apostrophes/periods/hyphens only
+- Last name: letters/spaces/apostrophes/periods/hyphens only
+- Email: valid format and unique
+- Phone: exactly 10 digits
+- Date of birth: valid past date, age between 3 and 100 years
+- Grade: required
+- Address: minimum 10 characters
+- Status: `active` or `inactive`
+
+## Useful Commands
+
+Backend:
+
+```bash
+python manage.py check
+python manage.py migrate
+python manage.py seed
+python manage.py runserver
+```
+
+Frontend:
+
+```bash
+npm run lint
+npm run build
+npm run dev
+```
+
+## Production Notes
+
+- Keep `SECRET_KEY`, `ADMIN_PASSWORD`, and `DATABASE_URL` private.
+- Do not commit real `.env` files.
+- Use Render PostgreSQL for persistent production data.
+- Use the Render **Internal Database URL** for the backend `DATABASE_URL`.
+- Redeploy the backend after changing environment variables.
+- Redeploy the frontend after changing `VITE_API_BASE_URL`.
