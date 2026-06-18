@@ -1,7 +1,7 @@
 import { UserPlus } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import ConfirmModal from "../components/ConfirmModal";
 import Pagination from "../components/Pagination";
@@ -11,24 +11,58 @@ import { useStudents } from "../hooks/useStudents";
 
 const gradeOptions = Array.from({ length: 12 }, (_, index) => `Grade ${index + 1}`);
 
+const getInitialPage = (searchParams) => {
+  const page = Number(searchParams.get("page"));
+  return Number.isInteger(page) && page > 0 ? page : 1;
+};
+
 const StudentList = () => {
   const { students, pagination, loading, fetchStudents, deleteStudent, updateStudentStatus } = useStudents();
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [status, setStatus] = useState("");
-  const [grade, setGrade] = useState("");
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get("search") || "");
+  const [debouncedSearch, setDebouncedSearch] = useState(() => searchParams.get("search") || "");
+  const [status, setStatus] = useState(() => searchParams.get("status") || "");
+  const [grade, setGrade] = useState(() => searchParams.get("grade") || "");
+  const [page, setPage] = useState(() => getInitialPage(searchParams));
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [statusUpdatingId, setStatusUpdatingId] = useState(null);
+  const hasInitializedSearch = useRef(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setDebouncedSearch(search);
-      setPage(1);
+      if (hasInitializedSearch.current) {
+        setPage(1);
+      } else {
+        hasInitializedSearch.current = true;
+      }
     }, 300);
     return () => window.clearTimeout(timer);
   }, [search]);
+
+  useEffect(() => {
+    setSearchParams(
+      (current) => {
+        const next = new window.URLSearchParams(current);
+
+        if (debouncedSearch) next.set("search", debouncedSearch);
+        else next.delete("search");
+
+        if (status) next.set("status", status);
+        else next.delete("status");
+
+        if (grade) next.set("grade", grade);
+        else next.delete("grade");
+
+        if (page > 1) next.set("page", String(page));
+        else next.delete("page");
+
+        return next;
+      },
+      { replace: true },
+    );
+  }, [debouncedSearch, grade, page, setSearchParams, status]);
 
   useEffect(() => {
     fetchStudents({ page, search: debouncedSearch, status, grade });
