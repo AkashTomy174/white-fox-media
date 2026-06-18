@@ -34,6 +34,7 @@ class StudentViewSet(viewsets.ModelViewSet):
         search = self.request.query_params.get("search")
         status_filter = self.request.query_params.get("status")
         grade_filter = self.request.query_params.get("grade")
+        
 
         if search:
             queryset = queryset.filter(
@@ -47,6 +48,11 @@ class StudentViewSet(viewsets.ModelViewSet):
 
         if grade_filter:
             queryset = queryset.filter(grade__iexact=grade_filter)
+            page=self.paginate_queryset(queryset)
+            
+            if page is not None:
+                self.serializer=self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
 
         return queryset
 
